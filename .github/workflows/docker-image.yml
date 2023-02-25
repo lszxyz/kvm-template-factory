@@ -12,5 +12,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+    - name: echo os info
+      run: |
+        uname -a
+        cat /etc/os-release
+        free -m
+        df -h
+    
+    - name: run redis
+      run: |
+        docker run -d --name redis -p 6379:6379 redis
+      
+    - name: test redis performance
+      run: |
+        docker run --rm --link redis:redis redis redis-benchmark -h redis -c 100 -n 100000 -q
+
