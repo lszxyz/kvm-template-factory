@@ -21,22 +21,18 @@ jobs:
     
     - name: build image
       run: |
-        printf 'in dev mode, building images'
         docker build -t industryessentials/ymir-backend:release-2.1.0   --build-arg PIP_SOURCE=https://pypi.mirrors.ustc.edu.cn/simple https://github.com/IndustryEssentials/ymir.git#master:/ymir -f Dockerfile.backend
         docker build -t industryessentials/ymir-web:release-2.1.0  --build-arg NPM_REGISTRY=https://registry.npmmirror.com  https://github.com/IndustryEssentials/ymir.git#master:/ymir/web
 
     - name: save images 
       run: |
-        docker save industryessentials/ymir-backend:release-2.1.0 > ymir-backend.tar
-        docker save industryessentials/ymir-web:release-2.1.0 > ymir-web.tar
+        docker save -o industryessentials/ymir-backend:release-2.1.0 > ymir-backend.tar
+        docker save -o industryessentials/ymir-web:release-2.1.0 > ymir-web.tar
       
-    - name: upload images to release
+    - name: upload images
       uses: actions/upload-artifact@v3
       with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: ymir-backend.tar
-        asset_name: ymir-backend.tar
-        tag: release-2.1.0
-        overwrite: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        name: ymir-images
+        path: |
+          ymir-backend.tar
+          ymir-web.tar
