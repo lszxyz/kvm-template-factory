@@ -30,10 +30,13 @@ jobs:
         docker save industryessentials/ymir-backend:release-2.1.0 > ymir-backend.tar
         docker save industryessentials/ymir-web:release-2.1.0 > ymir-web.tar
       
-    - name: upload images
-      uses: actions/upload-artifact@v2
+    - name: upload images to release
+      uses: svenstaro/upload-release-action@v2
       with:
-        name: ymir-images
-        path: |
-          ymir-backend.tar
-          ymir-web.tar
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: ymir-backend.tar
+        asset_name: ymir-backend.tar
+        tag: release-2.1.0
+        overwrite: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
