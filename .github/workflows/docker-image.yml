@@ -31,7 +31,7 @@ jobs:
         docker save industryessentials/ymir-web:release-2.1.0 > ymir-web.tar
       
     - name: upload images to release
-      uses: svenstaro/upload-release-action@v2
+      uses: actions/upload-artifact@v3
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: ymir-backend.tar
