@@ -21,11 +21,9 @@ jobs:
     
     - name: build image
       run: |
-        DEV_SOURCE_BACKEND_PIP='https://pypi.mirrors.ustc.edu.cn/simple'
-        DEV_SOURCE_WEB_NPM='https://registry.npmmirror.com
         printf 'in dev mode, building images'
-        docker build -t industryessentials/ymir-backend:release-2.1.0   --build-arg PIP_SOURCE=${DEV_SOURCE_BACKEND_PIP} https://github.com/IndustryEssentials/ymir.git#master:/ymir -f Dockerfile.backend
-        docker build -t industryessentials/ymir-web:release-2.1.0  --build-arg NPM_REGISTRY=${DEV_SOURCE_WEB_NPM}  https://github.com/IndustryEssentials/ymir.git#master:/ymir/web
+        docker build -t industryessentials/ymir-backend:release-2.1.0   --build-arg PIP_SOURCE=https://pypi.mirrors.ustc.edu.cn/simple https://github.com/IndustryEssentials/ymir.git#master:/ymir -f Dockerfile.backend
+        docker build -t industryessentials/ymir-web:release-2.1.0  --build-arg NPM_REGISTRY=https://registry.npmmirror.com  https://github.com/IndustryEssentials/ymir.git#master:/ymir/web
 
     - name: save images 
       run: |
