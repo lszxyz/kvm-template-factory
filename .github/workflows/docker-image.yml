@@ -21,9 +21,31 @@ jobs:
     
     - name: run redis
       run: |
-        docker run -d --name redis -p 6379:6379 redis
-      
-    - name: test redis performance
-      run: |
-        docker run --rm --link redis:redis redis redis-benchmark -h redis -c 100 -n 100000 -q
+        DOCKER_BACKEND='industryessentials/ymir-backend:release-2.1.0'
+        DOCKER_WEB='industryessentials/ymir-web:release-2.1.0'
+        DEV_SOURCE_BACKEND_PIP='https://pypi.mirrors.ustc.edu.cn/simple'
+        DEV_SOURCE_WEB_NPM='https://registry.npmmirror.com
+        printf '\nin dev mode, building images.\n'
+        docker build \
+          -t ${DOCKER_BACKEND} \
+          --build-arg PIP_SOURCE=${DEV_SOURCE_BACKEND_PIP} \
+          https://github.com/IndustryEssentials/ymir.git#master:/ymir -f Dockerfile.backend
+        docker build \
+          -t ${DOCKER_WEB} \
+          --build-arg NPM_REGISTRY=${DEV_SOURCE_WEB_NPM} \
+          https://github.com/IndustryEssentials/ymir.git#master:/ymir/web
 
+    - name: save images 
+      run: |
+        DOCKER_BACKEND='industryessentials/ymir-backend:release-2.1.0'
+        DOCKER_WEB='industryessentials/ymir-web:release-2.1.0'
+        docker save ${DOCKER_BACKEND} > ymir-backend.tar
+        docker save ${DOCKER_WEB} > ymir-web.tar
+      
+    - name: upload images
+      uses: actions/upload-artifact@v2
+      with:
+        name: ymir-images
+        path: |
+          ymir-backend.tar
+          ymir-web.tar
