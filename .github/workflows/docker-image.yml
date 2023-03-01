@@ -26,8 +26,8 @@ jobs:
 
     - name: save images 
       run: |
-        docker save -o industryessentials/ymir-backend:release-2.1.0 > ymir-backend.tar
-        docker save -o industryessentials/ymir-web:release-2.1.0 > ymir-web.tar
+        docker save  industryessentials/ymir-backend:release-2.1.0 > ymir-backend.tar
+        docker save  industryessentials/ymir-web:release-2.1.0 > ymir-web.tar
       
     - name: upload images
       uses: actions/upload-artifact@v3
