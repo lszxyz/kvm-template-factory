@@ -15,13 +15,11 @@ jobs:
     
     - name: build image
       run: |
-        docker build -t industryessentials/ymir-backend:release-2.1.0   --build-arg PIP_SOURCE=https://pypi.mirrors.ustc.edu.cn/simple https://github.com/lszxyz/ymir.git#master:/ymir -f Dockerfile.backend
-        docker build -t industryessentials/ymir-web:release-2.1.0  --build-arg NPM_REGISTRY=https://registry.npmmirror.com  https://github.com/lszxyz/ymir.git#master:/ymir/web
+        docker build -t industryessentials/ymir-backend:release-2.1.0    https://github.com/lszxyz/ymir.git#master:/ymir -f Dockerfile.backend
 
     - name: save images 
       run: |
         docker save  industryessentials/ymir-backend:release-2.1.0 > ymir-backend.tar
-        docker save  industryessentials/ymir-web:release-2.1.0 > ymir-web.tar
       
     - name: upload images
       uses: actions/upload-artifact@v3
@@ -29,4 +27,3 @@ jobs:
         name: ymir-images
         path: |
           ymir-backend.tar
-          ymir-web.tar
