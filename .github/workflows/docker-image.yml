@@ -13,11 +13,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build the Docker image
         run: 
-          git clone https://github.com/modelai/ymir-executor-fork -b ymir-dev
-          cd ymir-executor-fork/det-demo-tmi
-          docker build -t ymir/executor:det-demo-tmi .
-      - name: run the Docker image
-        run: docker run -it ymir/executor:det-demo-tmi
+            pip install "git+https://github.com/modelai/ymir-executor-sdk.git@ymir2.1.0"
 
 
 
