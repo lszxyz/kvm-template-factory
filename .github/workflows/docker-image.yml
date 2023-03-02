@@ -6,24 +6,19 @@ on:
 
 jobs:
 
+#  build image
   build:
-
-    runs-on: ubuntu-22.04
-
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: build image
-      run: |
-        docker build -t industryessentials/ymir-backend:release-2.1.0    https://github.com/lszxyz/ymir.git#master:/ymir -f Dockerfile.backend
- 
-    - name: save images 
-      run: |
-        docker save  industryessentials/ymir-backend:release-2.1.0 > ymir-backend.tar
-      
-    - name: upload images
-      uses: actions/upload-artifact@v3
-      with:
-        name: ymir-images
-        path: |
-          ymir-backend.tar
+      - uses: actions/checkout@v2
+      - name: Build the Docker image
+        run: 
+          git clone https://github.com/modelai/ymir-executor-fork -b ymir-dev
+          cd ymir-executor-fork/det-demo-tmi
+          docker build -t ymir/executor:det-demo-tmi .
+      - name: run the Docker image
+        run: docker run -it ymir/executor:det-demo-tmi
+
+
+
+
