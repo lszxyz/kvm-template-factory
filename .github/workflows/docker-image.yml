@@ -10,11 +10,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Build the Docker image
-        run: 
-            pip install "git+https://github.com/modelai/ymir-executor-sdk.git@ymir2.1.0"
+    - uses: Jimver/cuda-toolkit@v0.2.11
+      id: cuda-toolkit
+      with:
+        cuda: '11.2.0'
 
+    - run: echo "Installed cuda version is: ${{steps.cuda-toolkit.outputs.cuda}}"
 
+    - run: echo "Cuda install location: ${{steps.cuda-toolkit.outputs.CUDA_PATH}}"
 
-
+    - run: nvcc -V
