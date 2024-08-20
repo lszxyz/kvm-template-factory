@@ -1,18 +1,98 @@
-name: Docker Image CI
+name: Compression Tool Comparison
 
 on:
   push:
     branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
 
-#  build image
-  build:
+  compression_test:
     runs-on: ubuntu-latest
+    
     steps:
-    - uses: Jimver/cuda-toolkit@v0.2.11
-      id: cuda-toolkit
-      with:
-        cuda: '11.2.0'
+    - uses: actions/checkout@v3
+    
+    - name: Install Compression Tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gzip pigz zstd
         
-    - run: nvcc -V
+    - name: Generate Test Files
+      run: |
+        # Generate 1GB test file
+        dd if=/dev/urandom of=1gb_file.txt bs=1M count=1024
+        
+        # Generate 1MB test file
+        dd if=/dev/urandom of=1mb_file.txt bs=1M count=1
+        
+    - name: GZIP Compression and Decompression
+      run: |
+        echo "GZIP Compression and Decompression:"
+        
+        # Compress 1GB file
+        time gzip -c 1gb_file.txt > 1gb_file.txt.gz
+        
+        # Decompress 1GB file
+        time gzip -d 1gb_file.txt.gz
+        
+        # Compress 1MB file  
+        time gzip -c 1mb_file.txt > 1mb_file.txt.gz
+        
+        # Decompress 1MB file
+        time gzip -d 1mb_file.txt.gz
+        
+    - name: Pigz Compression and Decompression  
+      run: |
+        echo "Pigz Compression and Decompression:"
+        
+        # Compress 1GB file
+        time pigz -c 1gb_file.txt > 1gb_file.txt.gz
+        
+        # Decompress 1GB file
+        time pigz -d 1gb_file.txt.gz
+        
+        # Compress 1MB file
+        time pigz -c 1mb_file.txt > 1mb_file.txt.gz
+        
+        # Decompress 1MB file
+        time pigz -d 1mb_file.txt.gz
+        
+    - name: Zstd Compression and Decompression
+      run: |
+        echo "Zstd Compression and Decompression:"
+        
+        # Compress 1GB file
+        time zstd -c 1gb_file.txt > 1gb_file.txt.zst
+        
+        # Decompress 1GB file
+        time zstd -d 1gb_file.txt.zst
+        
+        # Compress 1MB file
+        time zstd -c 1mb_file.txt > 1mb_file.txt.zst
+        
+        # Decompress 1MB file
+        time zstd -d 1mb_file.txt.zst
+        
+    - name: Output Summary
+      run: |
+        echo "===== Compression Tool Comparison ====="
+        echo "GZIP:"
+        echo "- 1GB file compression time: "
+        gzip -c 1gb_file.txt | wc -c
+        echo "- 1GB file decompression time: "
+        gzip -d 1gb_file.txt.gz | wc -c
+        echo "- 1MB file compression time: "
+        gzip -c 1mb_file.txt | wc -c
+        echo "- 1MB file decompression time: "
+        gzip -d 1mb_file.txt.gz | wc -c
+        
+        echo "Pigz:"
+        echo "- 1GB file compression time: "
+        pigz -c 1gb_file.txt | wc -c
+        echo "- 1GB file decompression time: "
+        pigz -d 1gb_file.txt.gz | wc -c
+        echo "- 1MB file compression time: "
+        pigz -c 1mb_file.txt | wc -c
+        echo "- 1MB file decomp
