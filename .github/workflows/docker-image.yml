@@ -48,32 +48,32 @@ jobs:
         echo "Pigz Compression and Decompression:"
         
         # Compress 1GB file
-        time pigz -c 1gb_file.txt > 1gb_file.txt.gz
+        time pigz -c 1gb_file.txt > 1gb_file.pigz
         
         # Decompress 1GB file
-        time pigz -d 1gb_file.txt.gz
+        time pigz -d 1gb_file.pigz
         
         # Compress 1MB file
-        time pigz -c 1mb_file.txt > 1mb_file.txt.gz
+        time pigz -c 1mb_file.txt > 1mb_file.pigz
         
         # Decompress 1MB file
-        time pigz -d 1mb_file.txt.gz
+        time pigz -d 1mb_file.pigz
         
     - name: Zstd Compression and Decompression
       run: |
         echo "Zstd Compression and Decompression:"
         
         # Compress 1GB file
-        time zstd -c 1gb_file.txt > 1gb_file.txt.zst
+        time zstd -c 1gb_file.txt > 1gb_file.zst
         
         # Decompress 1GB file
-        time zstd -d 1gb_file.txt.zst
+        time zstd -d 1gb_file.zst
         
         # Compress 1MB file
-        time zstd -c 1mb_file.txt > 1mb_file.txt.zst
+        time zstd -c 1mb_file.txt > 1mb_file.zst
         
         # Decompress 1MB file
-        time zstd -d 1mb_file.txt.zst
+        time zstd -d 1mb_file.zst
         
     - name: Output Summary
       run: |
@@ -92,7 +92,8 @@ jobs:
         echo "- 1GB file compression time: "
         pigz -c 1gb_file.txt | wc -c
         echo "- 1GB file decompression time: "
-        pigz -d 1gb_file.txt.gz | wc -c
+        pigz -d 1gb_file.pigz | wc -c
         echo "- 1MB file compression time: "
         pigz -c 1mb_file.txt | wc -c
-        echo "- 1MB file decomp
+        echo "- 1MB file decompression time: "
+        pigz -d 1mb_file.pigz |
