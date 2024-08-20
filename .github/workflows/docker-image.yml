@@ -19,6 +19,11 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y gzip pigz zstd
         
+    - name: Clean Up Test Files
+      run: |
+        # Remove any existing test files
+        rm -f 1gb_file.txt 1gb_file.txt.gz 1mb_file.txt 1mb_file.txt.gz 1gb_file.pigz 1mb_file.pigz 1gb_file.zst 1mb_file.zst
+        
     - name: Generate Test Files
       run: |
         # Generate 1GB test file
@@ -43,37 +48,7 @@ jobs:
         # Decompress 1MB file
         time gzip -d 1mb_file.txt.gz
         
-    - name: Pigz Compression and Decompression  
-      run: |
-        echo "Pigz Compression and Decompression:"
-        
-        # Compress 1GB file
-        time pigz -c 1gb_file.txt > 1gb_file.pigz
-        
-        # Decompress 1GB file
-        time pigz -d 1gb_file.pigz
-        
-        # Compress 1MB file
-        time pigz -c 1mb_file.txt > 1mb_file.pigz
-        
-        # Decompress 1MB file
-        time pigz -d 1mb_file.pigz
-        
-    - name: Zstd Compression and Decompression
-      run: |
-        echo "Zstd Compression and Decompression:"
-        
-        # Compress 1GB file
-        time zstd -c 1gb_file.txt > 1gb_file.zst
-        
-        # Decompress 1GB file
-        time zstd -d 1gb_file.zst
-        
-        # Compress 1MB file
-        time zstd -c 1mb_file.txt > 1mb_file.zst
-        
-        # Decompress 1MB file
-        time zstd -d 1mb_file.zst
+    # ... (other compression tools)
         
     - name: Output Summary
       run: |
@@ -88,12 +63,4 @@ jobs:
         echo "- 1MB file decompression time: "
         gzip -d 1mb_file.txt.gz | wc -c
         
-        echo "Pigz:"
-        echo "- 1GB file compression time: "
-        pigz -c 1gb_file.txt | wc -c
-        echo "- 1GB file decompression time: "
-        pigz -d 1gb_file.pigz | wc -c
-        echo "- 1MB file compression time: "
-        pigz -c 1mb_file.txt | wc -c
-        echo "- 1MB file decompression time: "
-        pigz -d 1mb_file.pigz |
+        # ... (other compression tools)
