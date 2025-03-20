@@ -16,7 +16,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y qemu-utils virt-builder sshpass
+          sudo apt-get install -y qemu-utils libguestfs-tools sshpass
 
       - name: Build Debian Template
         env:
