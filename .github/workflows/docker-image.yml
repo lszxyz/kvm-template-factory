@@ -1,66 +1,35 @@
-name: Compression Tool Comparison
+name: Build Debian KVM Template
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  schedule:
+    - cron: '0 0 * * *'  # 每天 00:00 UTC 运行 (北京时间 08:00)
+  workflow_dispatch: # 允许手动触发
 
 jobs:
-
-  compression_test:
+  build:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Install Compression Tools
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y gzip pigz zstd
-        
-    - name: Clean Up Test Files
-      run: |
-        # Remove any existing test files
-        rm -f 1gb_file.txt 1gb_file.txt.gz 1mb_file.txt 1mb_file.txt.gz 1gb_file.pigz 1mb_file.pigz 1gb_file.zst 1mb_file.zst
-        
-    - name: Generate Test Files
-      run: |
-        # Generate 1GB test file
-        dd if=/dev/urandom of=1gb_file.txt bs=1M count=1024
-        
-        # Generate 1MB test file
-        dd if=/dev/urandom of=1mb_file.txt bs=1M count=1
-        
-    - name: GZIP Compression and Decompression
-      run: |
-        echo "GZIP Compression and Decompression:"
-        
-        # Compress 1GB file
-        time gzip -c 1gb_file.txt > 1gb_file.txt.gz
-        
-        # Decompress 1GB file
-        time gzip -d 1gb_file.txt.gz
-        
-        # Compress 1MB file  
-        time gzip -c 1mb_file.txt > 1mb_file.txt.gz
-        
-        # Decompress 1MB file
-        time gzip -d 1mb_file.txt.gz
-        
-    # ... (other compression tools)
-        
-    - name: Output Summary
-      run: |
-        echo "===== Compression Tool Comparison ====="
-        echo "GZIP:"
-        echo "- 1GB file compression time: "
-        gzip -c 1gb_file.txt | wc -c
-        echo "- 1GB file decompression time: "
-        gzip -d 1gb_file.txt.gz | wc -c
-        echo "- 1MB file compression time: "
-        gzip -c 1mb_file.txt | wc -c
-        echo "- 1MB file decompression time: "
-        gzip -d 1mb_file.txt.gz | wc -c
-        
-        # ... (other compression tools)
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-utils virt-builder sshpass
+
+      - name: Build Debian Template
+        env:
+          SSH_USER: ${{ secrets.KVM_SSH_USER }}
+          KVM_HOST: ${{ secrets.KVM_HOST }}
+          STATIC_IP: ${{ secrets.STATIC_IP }}  # 可选的静态 IP 地址
+          STATIC_NETMASK: ${{ secrets.STATIC_NETMASK }} # 可选的子网掩码
+          STATIC_GATEWAY: ${{ secrets.STATIC_GATEWAY }} # 可选的网关
+          STATIC_DNS: ${{ secrets.STATIC_DNS }} # 可选的 DNS 服务器
+        run: |
+          chmod +x scripts/build_debian_template.sh
+          scripts/build_debian_template.sh
+
+      - name: Cleanup
+        run: |
+          echo "构建完成，清理工作区"
