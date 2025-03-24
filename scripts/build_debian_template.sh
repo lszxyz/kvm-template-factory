@@ -5,7 +5,7 @@ set -e
 VM_NAME="debian-template"
 IMAGE_NAME="debian-template.qcow2"
 IMAGE_SIZE="64G"
-OS_VARIANT="debian12"
+OS_VARIANT="debian12.0"
 PACKAGES="openssh-server vim curl wget net-tools sudo"
 #时区
 TIME_ZONE="Asia/Shanghai"
